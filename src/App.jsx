@@ -3,7 +3,8 @@ import './App.css';
 
 function App() {
     const [inputValue, setInputValue] = useState('');
-    const [view, setView] = useState('home'); // 'home' or 'projects'
+    const [view, setView] = useState('home'); // 'home', 'projects', or 'help'
+    const [error, setError] = useState(''); // State for error message
     const inputRef = useRef(null); // Ref for the input field
 
     // Focus the input field on component mount
@@ -19,10 +20,22 @@ function App() {
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
-            if (inputValue.trim() === 'cd projects') {
+            const command = inputValue.trim();
+            if (command === 'cd projects') {
                 setView('projects');
-            } else if (inputValue.trim() === 'cd home') {
+                setError(''); // Clear error message
+            } else if (command === 'cd home') {
                 setView('home');
+                setError(''); // Clear error message
+            } else if (command === 'help') {
+                setView('help');
+                setError(''); // Clear error message
+            } else {
+                // Extract the first word of the command for the error message
+                const firstWord = command.split(' ')[0];
+                setError(
+                    `ERROR: command "${firstWord}" not recognized. Type 'help' to see what you can do.`
+                );
             }
             setInputValue(''); // Clear the input field
         }
@@ -55,7 +68,7 @@ function App() {
                         </p>
                     </div>
                 </div>
-            ) : (
+            ) : view === 'projects' ? (
                 <div className="mb-8 text-left">
                     <h1 className="text-2xl font-bold">My Projects</h1>
                     <div className="mt-4">
@@ -81,6 +94,43 @@ function App() {
                             velit esse cillum dolore eu fugiat nulla pariatur.
                         </p>
                     </div>
+                </div>
+            ) : (
+                <div className="mb-8 text-left">
+                    <h1 className="text-2xl font-bold">
+                        Navigating Ravindu's Portfolio
+                    </h1>
+                    <div className="mt-4">
+                        <p className="text-green-400">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit. Sed do eiusmod tempor incididunt ut labore et
+                            dolore magna aliqua. Ut enim ad minim veniam, quis
+                            nostrud exercitation ullamco laboris nisi ut aliquip
+                            ex ea commodo consequat.
+                        </p>
+                    </div>
+                    <h2 className="text-xl font-semibold mt-6">
+                        List of available commands
+                    </h2>
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                        <div className="text-green-400">
+                            <p>cd home</p>
+                            <p>cd projects</p>
+                            <p>help</p>
+                        </div>
+                        <div className="text-green-400">
+                            <p>Navigate to the home page.</p>
+                            <p>Navigate to the projects page.</p>
+                            <p>Display this help message.</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Error Message Section */}
+            {error && (
+                <div className="fixed bottom-16 right-0 w-full bg-black p-4 border-t border-red-500">
+                    <p className="text-red-500">{error}</p>
                 </div>
             )}
 
